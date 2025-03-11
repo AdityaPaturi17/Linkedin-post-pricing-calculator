@@ -1,0 +1,70 @@
+import React, { useState } from 'react';
+import axios from 'axios';
+
+function App() {
+  const [followerCount, setFollowerCount] = useState('');
+  const [engagementRate, setEngagementRate] = useState('');
+  const [nicheMultiplier, setNicheMultiplier] = useState('');
+  const [contentComplexity, setContentComplexity] = useState('');
+  const [audienceDemographics, setAudienceDemographics] = useState('');
+  const [price, setPrice] = useState(null);
+
+  const calculatePrice = async (e) => {
+    e.preventDefault();
+    const response = await axios.post('http://localhost:5000/calculate', {
+      followerCount,
+      engagementRate,
+      nicheMultiplier,
+      contentComplexity,
+      audienceDemographics,
+    });
+    setPrice(response.data.price);
+  };
+
+  return (
+    <div>
+      <h1>LinkedIn Influencer Pricing Calculator</h1>
+      <form onSubmit={calculatePrice}>
+        <input
+          type="number"
+          placeholder="Follower Count"
+          value={followerCount}
+          onChange={(e) => setFollowerCount(e.target.value)}
+          required
+        />
+        <input
+          type="number"
+          placeholder="Engagement Rate (%)"
+          value={engagementRate}
+          onChange={(e) => setEngagementRate(e.target.value)}
+          required
+        />
+        <input
+          type="number"
+          placeholder="Niche Multiplier"
+          value={nicheMultiplier}
+          onChange={(e) => setNicheMultiplier(e.target.value)}
+          required
+        />
+        <input
+          type="number"
+          placeholder="Content Complexity Factor"
+          value={contentComplexity}
+          onChange={(e) => setContentComplexity(e.target.value)}
+          required
+        />
+        <input
+          type="number"
+          placeholder="Audience Demographics Factor"
+          value={audienceDemographics}
+          onChange={(e) => setAudienceDemographics(e.target.value)}
+          required
+        />
+        <button type="submit">Calculate Price</button>
+      </form>
+      {price && <h2>Suggested Price: ${price.toFixed(2)}</h2>}
+    </div>
+  );
+}
+
+export default App;
